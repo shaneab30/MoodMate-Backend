@@ -1,0 +1,3 @@
+MONGO_URI = "mongodb+srv://shanebaskara30:ywEVflXH2JSq7cPM@clustertest.kacxooz.mongodb.net/?retryWrites=true&w=majority&appName=ClusterTest"
+DATABASE_NAME = "db_skripsi"
+USERS_COLLECTION = "users"
