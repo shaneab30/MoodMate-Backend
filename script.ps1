@@ -1,0 +1,1 @@
+pip install flask flask_cors requests flask_restful certifi pymongo
