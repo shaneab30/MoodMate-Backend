@@ -20,20 +20,21 @@ def predict_image(image_path)->str:
     image = np.array(image).flatten()
     image = image/255.0
 
+    image = image.reshape(1, -1)  
     # image.save(f'resized_{image_name}.png')
     print(image)
 
     # scale image with standard scaler
-    X_scaled, y_encoded,label_encoder, pca, scaler = load(open("/Users/shaneab/Projects/Fullstack project/backend-skripsi/ml_model/labelencoder_standardscaler_pca_normalizers_dump.pkl", "rb"))
+    X_scaled, y_encoded,label_encoder, pca, scaler = load(open("ml_model/labelencoder_standardscaler_pca_normalizers_dump.pkl", "rb"))
     image = pca.transform(image)
     image = scaler.transform(image)
 
     # machine learning
-    svc_model = load(open("knn_model_standardscaler_grisearch_pca_dump.pkl", "rb"))
+    svc_model = load(open("ml_model/knn_model_standardscaler_grisearch_pca_dump.pkl", "rb"))
     y = svc_model.predict(image)
 
     label = label_encoder.inverse_transform(y)
     # label = label_encoder.inverse_transform([y])
 
     print(label)
-    return None
+    return label.tolist()[0] # Return the first label as a string
