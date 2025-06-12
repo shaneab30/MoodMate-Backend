@@ -37,4 +37,4 @@ def predict_image(image_path)->str:
     # label = label_encoder.inverse_transform([y])
 
     print(label)
-    return label.tolist()[0] # Return the first label as a string
+    return label.tolist()[0]

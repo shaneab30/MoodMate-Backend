@@ -11,7 +11,7 @@ CORS(app)
 api = Api(app)
 
 # api.add_resource(ProductsController, '/products', '/products/<string:productId>')
-api.add_resource(UsersController, '/users', '/users/register')
+api.add_resource(UsersController, '/users', '/users/register', '/users/<string:userId>')
 # api.add_resource(PredictController, '/predict', '/predict/<string:userId>')
 # api.add_resource(OrdersController, '/orders', '/orders/<string:orderId>')
 

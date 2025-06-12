@@ -7,6 +7,8 @@ parser.add_argument('username', type=str, required=True, help="Parameter 'userna
 parser.add_argument('password', type=str, required=True, help="Parameter 'password' can not be blank")
 parser.add_argument('email', type=str, required=True, help="Parameter 'email' can not be blank")
 parser.add_argument('age', type=str, required=True, help="Parameter 'age' can not be blank")
+parser.add_argument('firstname', type=str, required=True, help="Parameter 'firstname' can not be blank")
+parser.add_argument('lastname', type=str, required=True, help="Parameter 'lastname' can not be blank")
 
 
 class UsersController(Resource):
@@ -15,7 +17,7 @@ class UsersController(Resource):
 
     def post(self):
         args = parser.parse_args()
-        data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age']}
+        data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age'], 'firstname': args['firstname'], 'lastname': args['lastname']}
         # print(f"{modelUsers.findAllUsers()}")
         listUser = []
         try: 
@@ -37,10 +39,12 @@ class UsersController(Resource):
         
     def put(self,userId):
         args = parser.parse_args()
-        data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age']}
+        data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age'], 'firstname': args['firstname'], 'lastname': args['lastname']}
         resultUpdate = modelUsers.updateUser(userId, data)
         
         if resultUpdate.get('status') == True:
             return resultUpdate, 200
         else:
             return resultUpdate, 400
+    
+    
