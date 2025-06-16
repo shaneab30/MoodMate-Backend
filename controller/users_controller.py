@@ -76,7 +76,8 @@ class UsersController(Resource):
             if result.get('status') == True:
                 return {
                     'status': True,
-                    'message': 'Profile picture updated successfully'
+                    'message': 'Profile picture updated successfully',
+                    'filePath' : filename
                 }
             else:
                 return {

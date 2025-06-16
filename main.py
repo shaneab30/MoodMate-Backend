@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from controller.users_controller import UsersController
+from flask import send_from_directory
 
 app = Flask(__name__)
 CORS(app)
@@ -79,6 +80,9 @@ def upload_pfp():
 
     return jsonify({'message': 'Profile picture uploaded successfully'}), 200
 
+@app.route('/uploads/profile_pictures/<filename>', methods=['GET'])
+def serve_profile_picture(filename):
+    return send_from_directory('uploads/profile_pictures', filename)
 
 if __name__ == "__main__":
     app.run(debug=True)

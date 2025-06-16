@@ -7,7 +7,7 @@ import string
 class Users:
     def __init__(self):
         self.connection = Database(DATABASE_NAME)
-        print(self.connection.connection)
+        # print(self.connection.connection)
         
     def generateId(self):
         randomString = ''.join(random.choices(
@@ -33,9 +33,9 @@ class Users:
             result['status'] = True
             result['data'] = data
             result['message'] = "Berhasil mengambil semua data user"
-        print(result)
+        # print(result)
         return result
-    
+
     def insertUser(self, data):
         result = {'status': False, 'data': None, 'message': ''}
         data['_id'] = self.generateId()
