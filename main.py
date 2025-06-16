@@ -58,6 +58,28 @@ def predict():
     return jsonify({"message": "Prediction successful"}), 200
 
 
+@app.route('/users/upload-pfp', methods=['POST'])
+def upload_pfp():
+    user_id = request.form.get('_id')
+    image = request.files.get('profilePicture')
+
+    if not user_id or not image:
+        return jsonify({'error': 'Missing user_id or image'}), 400
+    
+    if image and allowed_file(image.filename):
+        filename = secure_filename(image.filename)
+        image_path = os.path.join("uploads/profile_pictures", filename)
+        
+        try:
+            image.save(image_path)
+            update_result = UsersController.updateProfilePicture(user_id, image_path)
+            return jsonify(update_result), 200 if update_result.get('status') else 400
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    return jsonify({'message': 'Profile picture uploaded successfully'}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

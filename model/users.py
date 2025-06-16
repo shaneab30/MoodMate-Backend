@@ -56,15 +56,21 @@ class Users:
         filter = {'_id': id}
         value = {'$set': data}
 
-        statusUpdate, dataUpdate = self.connection.update(collection_name=USERS_COLLECTION, filter=filter, value=value)
+        statusUpdate, dataUpdate = self.connection.update(
+            collection_name=USERS_COLLECTION,
+            filter=filter,
+            value=value
+        )
 
         if dataUpdate.get('modified_count', 0) == 0:
             result['message'] = "Tidak ada perubahan data"
             result['status'] = True
         elif statusUpdate == False:
-            result['message'] = ""
+            result['message'] = "Gagal update data user"
+            return result 
+
         if statusUpdate == True and dataUpdate.get('modified_count', 0) != 0:
             result['status'] = True
             result['message'] = "Berhasil update data user"
+
         return result
-    
