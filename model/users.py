@@ -74,3 +74,47 @@ class Users:
             result['message'] = "Berhasil update data user"
 
         return result
+    
+    def uploadProfilePicture(self, id, data):
+        result = {'status': False, 'data': None, 'message': ''}
+        filter = {'_id': id}
+        value = {'$set': data}
+        
+        statusUpdate, dataUpdate = self.connection.update(
+            collection_name=USERS_COLLECTION,
+            filter=filter,
+            value=value
+        )
+        if dataUpdate.get('modified_count', 0) == 0:
+            result['message'] = "Tidak ada perubahan data"
+            result['status'] = True
+            result['filePath'] = data['profilePicture']
+        elif statusUpdate == False:
+            result['message'] = "Gagal update data user"
+            return result 
+
+        if statusUpdate == True and dataUpdate.get('modified_count', 0) != 0:
+            result['status'] = True
+            result['message'] = "Berhasil update data user"
+            result['filePath'] = data['profilePicture']
+
+        return result
+        
+        
+        # try:
+        #     update_result = self.updateUser(
+        #         id,
+        #         {'profilePicture': data['profilePicture']}
+        #     )
+            
+        #     if update_result.get('status') == True:
+        #         result['status'] = True
+        #         result['message'] = 'Profile picture updated successfully'
+        #         result['filePath'] = data['profilePicture']
+        #     else:
+        #         result['message'] = 'Failed to update profile picture'
+                
+        # except Exception as e:
+        #     result['message'] = str(e)
+        
+        # return result

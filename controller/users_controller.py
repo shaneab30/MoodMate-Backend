@@ -64,26 +64,45 @@ class UsersController(Resource):
         else:
             return resultUpdate, 400
     
+    # @staticmethod
+    # def updateProfilePicture(user_id, filename):
+        
+    #     try:
+    #         resultUpdate = modelUsers.uploadProfilePicture(
+    #             user_id,
+    #             {'profilePicture': filename}
+    #         )
+    #         if resultUpdate.get('status') == True:
+    #             return resultUpdate, 200
+    #         else:
+    #             return resultUpdate, 400
+    #         # if result.get('status') == True:
+    #         #     return {
+    #         #         'status': True,
+    #         #         'message': 'Profile picture updated successfully',
+    #         #         'filePath' : filename
+    #         #     }
+    #         # else:
+    #         #     return {
+    #         #         'status': False,
+    #         #         'message': 'User not found or no changes made'
+    #         #     }
+    #     except Exception as e:
+    #         return {
+    #             'status': False,
+    #             'message': str(e)
+    #         }
+
     @staticmethod
     def updateProfilePicture(user_id, filename):
-        
         try:
-            result = modelUsers.updateUser(
+            result = modelUsers.uploadProfilePicture(
                 user_id,
                 {'profilePicture': filename}
             )
-            
-            if result.get('status') == True:
-                return {
-                    'status': True,
-                    'message': 'Profile picture updated successfully',
-                    'filePath' : filename
-                }
-            else:
-                return {
-                    'status': False,
-                    'message': 'User not found or no changes made'
-                }
+            if result['status']:
+                return result
+            return result
         except Exception as e:
             return {
                 'status': False,
