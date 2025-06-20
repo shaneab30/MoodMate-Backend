@@ -28,7 +28,26 @@ class UsersController(Resource):
     def get(self):
         return modelUsers.findAllUsers()
 
-    def post(self):
+    def post(self, userId=None):
+        if request.path.endswith('/profile-picture'):
+            image = request.files.get('profilePicture')
+
+            if not image:
+                return {'status': False, 'message': 'No image provided'}, 400
+            
+            if image and allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                image_path = os.path.join(UPLOAD_FOLDER, filename)
+
+                try:
+                    image.save(image_path)
+                    update_result = modelUsers.uploadProfilePicture(userId, {'profilePicture': image_path})
+                    return update_result, 200 if update_result.get('status') else 400
+                except Exception as e:
+                    return {'status': False, 'message': str(e)}, 500
+            
+            return {'status': False, 'message': 'Invalid image file type'}, 400
+        
         args = parser.parse_args()
         data = {
             'username': args['username'],
@@ -63,48 +82,3 @@ class UsersController(Resource):
             return resultUpdate, 200
         else:
             return resultUpdate, 400
-    
-    # @staticmethod
-    # def updateProfilePicture(user_id, filename):
-        
-    #     try:
-    #         resultUpdate = modelUsers.uploadProfilePicture(
-    #             user_id,
-    #             {'profilePicture': filename}
-    #         )
-    #         if resultUpdate.get('status') == True:
-    #             return resultUpdate, 200
-    #         else:
-    #             return resultUpdate, 400
-    #         # if result.get('status') == True:
-    #         #     return {
-    #         #         'status': True,
-    #         #         'message': 'Profile picture updated successfully',
-    #         #         'filePath' : filename
-    #         #     }
-    #         # else:
-    #         #     return {
-    #         #         'status': False,
-    #         #         'message': 'User not found or no changes made'
-    #         #     }
-    #     except Exception as e:
-    #         return {
-    #             'status': False,
-    #             'message': str(e)
-    #         }
-
-    @staticmethod
-    def updateProfilePicture(user_id, filename):
-        try:
-            result = modelUsers.uploadProfilePicture(
-                user_id,
-                {'profilePicture': filename}
-            )
-            if result['status']:
-                return result
-            return result
-        except Exception as e:
-            return {
-                'status': False,
-                'message': str(e)
-            }
