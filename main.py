@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from controller.users_controller import UsersController
+from controller.happiness_controller import HappinessController
 from flask import send_from_directory
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ api = Api(app)
 
 api.add_resource(UsersController, '/users', '/users/register', '/users/<string:userId>', '/users/<string:userId>/profile-picture')
 api.add_resource(EmotionController, '/emotions', '/emotions/<string:emotionId>')
+api.add_resource(HappinessController, '/happiness', '/happiness/<string:emotionId>')
 # api.add_resource(PredictController, '/predict', '/predict/<string:userId>')
 # api.add_resource(OrdersController, '/orders', '/orders/<string:orderId>')
 
