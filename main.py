@@ -65,6 +65,6 @@ def predict():
 def serve_profile_picture(filename):
     return send_from_directory('uploads/profile_pictures', filename)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
 
