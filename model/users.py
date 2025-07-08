@@ -99,22 +99,36 @@ class Users:
             result['filePath'] = data['profilePicture']
 
         return result
+    
+    def findUserByUsername(self, username):
+        result = {'status': False, 'data': None, 'message': ''}
+        filter = {'username': username}
+        status, data = self.connection.find(
+            collection_name=USERS_COLLECTION, filter=filter
+        )
         
+        if status == False:
+            result['message'] = "Terjadi kesalahan saat mengambil data user"
         
-        # try:
-        #     update_result = self.updateUser(
-        #         id,
-        #         {'profilePicture': data['profilePicture']}
-        #     )
-            
-        #     if update_result.get('status') == True:
-        #         result['status'] = True
-        #         result['message'] = 'Profile picture updated successfully'
-        #         result['filePath'] = data['profilePicture']
-        #     else:
-        #         result['message'] = 'Failed to update profile picture'
-                
-        # except Exception as e:
-        #     result['message'] = str(e)
-        
-        # return result
+        if status == True and data != None:
+            result['status'] = True
+            result['data'] = data
+            result['message'] = "Berhasil mengambil data user"
+        return result
+    
+    def findUserById(self, user_id):
+        result = {'status': False, 'data': None, 'message': ''}
+        filter = {'_id': user_id}
+        status, data = self.connection.find(
+            collection_name=USERS_COLLECTION, filter=filter
+        )
+        if status == False:
+            result['message'] = "Terjadi kesalahan saat mengambil data user"
+        elif data:
+            result['status'] = True
+            result['data'] = data
+            result['message'] = "Berhasil mengambil data user"
+        else:
+            result['message'] = "User tidak ditemukan"
+        return result
+

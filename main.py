@@ -8,22 +8,25 @@ from flask_cors import CORS, cross_origin
 from controller.users_controller import UsersController
 from controller.happiness_controller import HappinessController
 from flask import send_from_directory
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from controller.login_controller import LoginController
+
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+jwt = JWTManager(app)
 
-api.add_resource(UsersController, '/users', '/users/register', '/users/<string:userId>', '/users/<string:userId>/profile-picture')
+api.add_resource(UsersController, '/users', '/users/register', '/users/me', '/users/<string:userId>', '/users/<string:userId>/profile-picture')
 api.add_resource(EmotionController, '/emotions', '/emotions/<string:emotionId>')
 api.add_resource(HappinessController, '/happiness', '/happiness/<string:emotionId>')
-# api.add_resource(PredictController, '/predict', '/predict/<string:userId>')
-# api.add_resource(OrdersController, '/orders', '/orders/<string:orderId>')
+api.add_resource(LoginController, '/login')
 
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
+app.config["JWT_SECRET_KEY"] = "5h4n3en4h5" 
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -65,6 +68,6 @@ def predict():
 def serve_profile_picture(filename):
     return send_from_directory('uploads/profile_pictures', filename)
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
 

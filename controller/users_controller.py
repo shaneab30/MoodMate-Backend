@@ -4,6 +4,8 @@ from model.users import Users
 from flask import request, jsonify
 from werkzeug.utils import secure_filename
 import os
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
 
 modelUsers = Users()
 parser = reqparse.RequestParser()
@@ -25,9 +27,17 @@ def allowed_file(filename):
 
 
 class UsersController(Resource):
+    @jwt_required()
     def get(self):
+        if request.path.endswith('/me'):
+            userId = get_jwt_identity()
+            result = modelUsers.findUserById(userId)
+            if result['status']:
+                return result['data'], 200
+            return {'message': result['message']}, 404
         return modelUsers.findAllUsers()
 
+    @jwt_required()
     def post(self, userId=None):
         if request.path.endswith('/profile-picture'):
             image = request.files.get('profilePicture')
@@ -72,7 +82,8 @@ class UsersController(Resource):
 
         resultInsert = modelUsers.insertUser(data)
         return resultInsert, 200 if resultInsert.get('status') == True else 400
-        
+    
+    @jwt_required()
     def put(self,userId):
         args = parser.parse_args()
         data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age'], 'firstname': args['firstname'], 'lastname': args['lastname']}

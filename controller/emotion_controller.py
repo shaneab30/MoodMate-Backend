@@ -1,4 +1,5 @@
 import datetime
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from model.emotion import Emotion
 from flask import request
@@ -10,10 +11,12 @@ parser.add_argument('date', type=str, required=True, help="Parameter 'date' can 
 parser.add_argument('emotion', type=str, required=True, help="Parameter 'emotion' can not be blank")
 
 class EmotionController(Resource):
+    @jwt_required()
     def get(self):
         result = emotion.findAllEmotions()
         return result
     
+    @jwt_required()
     def post(self):
         args = parser.parse_args()
         try:
