@@ -1,6 +1,7 @@
 import os
 from flask import Flask, json, render_template, request, jsonify
 from controller.emotion_controller import EmotionController
+from controller.users_profile_picture_controller import UserProfilePictureController
 from ml_model.ML import predict_image
 from werkzeug.utils import secure_filename
 from flask_restful import Api
@@ -10,23 +11,26 @@ from controller.happiness_controller import HappinessController
 from flask import send_from_directory
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from controller.login_controller import LoginController
-
+from datetime import timedelta
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
-jwt = JWTManager(app)
 
-api.add_resource(UsersController, '/users', '/users/register', '/users/me', '/users/<string:userId>', '/users/<string:userId>/profile-picture')
+api.add_resource(UsersController, '/users', '/users/register', '/users/me', '/users/<string:userId>')
 api.add_resource(EmotionController, '/emotions', '/emotions/<string:emotionId>')
 api.add_resource(HappinessController, '/happiness', '/happiness/<string:emotionId>')
 api.add_resource(LoginController, '/login')
+api.add_resource(UserProfilePictureController, '/users/<string:userId>/profile-picture')
 
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["JWT_SECRET_KEY"] = "5h4n3en4h5" 
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=3) 
+
+jwt = JWTManager(app)
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)

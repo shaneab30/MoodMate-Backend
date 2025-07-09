@@ -39,25 +39,6 @@ class UsersController(Resource):
 
     @jwt_required()
     def post(self, userId=None):
-        if request.path.endswith('/profile-picture'):
-            image = request.files.get('profilePicture')
-
-            if not image:
-                return {'status': False, 'message': 'No image provided'}, 400
-            
-            if image and allowed_file(image.filename):
-                filename = secure_filename(image.filename)
-                image_path = os.path.join(UPLOAD_FOLDER, filename)
-
-                try:
-                    image.save(image_path)
-                    update_result = modelUsers.uploadProfilePicture(userId, {'profilePicture': image_path})
-                    return update_result, 200 if update_result.get('status') else 400
-                except Exception as e:
-                    return {'status': False, 'message': str(e)}, 500
-            
-            return {'status': False, 'message': 'Invalid image file type'}, 400
-        
         args = parser.parse_args()
         data = {
             'username': args['username'],
@@ -87,6 +68,15 @@ class UsersController(Resource):
     def put(self,userId):
         args = parser.parse_args()
         data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age'], 'firstname': args['firstname'], 'lastname': args['lastname']}
+        
+        existing_username = modelUsers.findUserByUsername(args['username'])
+        if existing_username.get('status') == True and existing_username.get('data').get('_id') != userId:
+            return {'status': False, 'data': None, 'message': 'Username Already Exists'}, 400
+        
+        existing_email = modelUsers.findUserByEmail(args['email'])
+        if existing_email.get('status') == True and existing_email.get('data').get('_id') != userId:
+            return {'status': False, 'data': None, 'message': 'Email Already Exists'}, 400
+        
         resultUpdate = modelUsers.updateUser(userId, data)
         
         if resultUpdate.get('status') == True:

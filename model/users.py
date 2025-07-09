@@ -116,6 +116,22 @@ class Users:
             result['message'] = "Berhasil mengambil data user"
         return result
     
+    def findUserByEmail(self, email):
+        result = {'status': False, 'data': None, 'message': ''}
+        filter = {'email': email}
+        status, data = self.connection.find(
+            collection_name=USERS_COLLECTION, filter=filter
+        )
+        
+        if status == False:
+            result['message'] = "Terjadi kesalahan saat mengambil data user"
+        
+        if status == True and data != None:
+            result['status'] = True
+            result['data'] = data
+            result['message'] = "Berhasil mengambil data user"
+        return result
+    
     def findUserById(self, user_id):
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'_id': user_id}
