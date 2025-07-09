@@ -32,7 +32,7 @@ class UserProfilePictureController(Resource):
             
             try:
                 image.save(image_path)
-                update_result = modelUsers.uploadProfilePicture(userId, {'profilePicture': image_path})
+                update_result = modelUsers.uploadProfilePicture(userId, {'profilePicture': filename})
                 return update_result, 200 if update_result.get('status') else 400
             except Exception as e:
                 return {'status': False, 'message': str(e)}, 500

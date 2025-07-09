@@ -65,7 +65,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+@jwt_required
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if "file" not in request.files:
@@ -95,9 +95,20 @@ def predict():
         return jsonify({"error": "No file part"}), 400
     return jsonify({"message": "Prediction successful"}), 200
 
-@app.route('/uploads/profile_pictures/<filename>', methods=['GET'])
-def serve_profile_picture(filename):
+@jwt_required()
+@app.route('/uploads/profile_pictures', methods=['GET'])
+def serve_profile_picture():
+    filename = request.args.get("filename")
+    if not filename:
+        return jsonify({"error": "Missing filename"}), 400
+
+    filename = secure_filename(filename)  # sanitize!
+    filepath = os.path.join('uploads/profile_pictures', filename)
+    if not os.path.exists(filepath):
+        return jsonify({"error": "File not found"}), 404
+
     return send_from_directory('uploads/profile_pictures', filename)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
