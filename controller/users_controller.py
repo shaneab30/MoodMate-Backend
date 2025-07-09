@@ -37,7 +37,7 @@ class UsersController(Resource):
             return {'message': result['message']}, 404
         return modelUsers.findAllUsers()
 
-    @jwt_required()
+    # @jwt_required()
     def post(self, userId=None):
         args = parser.parse_args()
         data = {
