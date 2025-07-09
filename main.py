@@ -16,9 +16,20 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
+class CustomApi(Api):
+    def handle_error(self, e):
+        if isinstance(e, NoAuthorizationError):
+            return jsonify({'status': False, 'data': None, 'message': str(e)}), 401
+        elif isinstance(e, ExpiredSignatureError):
+            return jsonify({'status': False, 'data': None, 'message': 'Token has expired'}), 401
+        elif isinstance(e, InvalidTokenError):
+            return jsonify({'status': False, 'data': None, 'message': 'Invalid token'}), 422
+        # Let default handler run for other errors
+        return super().handle_error(e)
+
 app = Flask(__name__)
 CORS(app)
-api = Api(app)
+api = CustomApi(app)
 
 api.add_resource(UsersController, '/users', '/users/register', '/users/me', '/users/<string:userId>')
 api.add_resource(EmotionController, '/emotions', '/emotions/<string:emotionId>')
