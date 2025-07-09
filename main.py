@@ -12,6 +12,9 @@ from flask import send_from_directory
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from controller.login_controller import LoginController
 from datetime import timedelta
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import NoAuthorizationError
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 app = Flask(__name__)
 CORS(app)
@@ -31,6 +34,19 @@ app.config["JWT_SECRET_KEY"] = "5h4n3en4h5"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=3) 
 
 jwt = JWTManager(app)
+
+@app.errorhandler(NoAuthorizationError)
+def handle_no_auth_error(error):
+    return jsonify({'status': False, 'data': None, 'message': str(error)}), 401
+
+@app.errorhandler(ExpiredSignatureError)
+def handle_expired_token(e):
+    return jsonify({'status': False, 'data': None, "message": "Token has expired"}), 401
+
+@app.errorhandler(InvalidTokenError)
+def handle_invalid_token(e):
+    return jsonify({'status': False, 'data': None, "message": "Invalid token"}), 422
+
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
