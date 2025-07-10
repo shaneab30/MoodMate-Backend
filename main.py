@@ -15,6 +15,7 @@ from datetime import timedelta
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+from controller.articles_controller import ArticlesController
 
 class CustomApi(Api):
     def handle_error(self, e):
@@ -36,6 +37,7 @@ api.add_resource(EmotionController, '/emotions', '/emotions/<string:emotionId>')
 api.add_resource(HappinessController, '/happiness', '/happiness/<string:emotionId>')
 api.add_resource(LoginController, '/login')
 api.add_resource(UserProfilePictureController, '/users/<string:userId>/profile-picture')
+api.add_resource(ArticlesController, '/articles', '/articles/<string:articleId>')
 
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
