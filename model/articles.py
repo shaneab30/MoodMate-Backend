@@ -17,10 +17,10 @@ class Articles:
             return randomString
         return self.generateId()
     
-    def findAllArticles(self):
+    def findAllArticles(self, skip=0, limit=8):
         result = {'status': False, 'data': None, 'message': ''}
         status, data = self.connection.findMany(
-            collection_name=ARTICLES_COLLECTION, filter={})
+            collection_name=ARTICLES_COLLECTION, filter={}, skip=skip, limit=limit)
         if status == False:
             result['message'] = "Terjadi kesalahan saat mengambil data artikel"
         elif data:

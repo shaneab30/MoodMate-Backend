@@ -12,7 +12,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('title', type=str, required=True, help="Parameter 'title' can not be blank", location='form')
 parser.add_argument('content', type=str, required=True, help="Parameter 'content' can not be blank", location='form')
 parser.add_argument('username', type=str, required=True, help="Parameter 'username' can not be blank", location='form')
-
+parser.add_argument('date', type=str, required=True, help="Parameter 'date' can not be blank", location='form')
 
 
 UPLOAD_FOLDER = "uploads/articles"
@@ -26,8 +26,10 @@ def allowed_file(filename):
 
 
 class ArticlesController(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self, articleId=None):
+        skip = int(request.args.get("skip", 0))
+        limit = int(request.args.get("limit", 8))
         if articleId:
             result = modelArticles.findArticleById(articleId)
             if result['status']:
@@ -35,7 +37,7 @@ class ArticlesController(Resource):
             else:
                 return result, 404
         else:
-            return modelArticles.findAllArticles()
+            return modelArticles.findAllArticles(skip=skip, limit=limit)
 
     @jwt_required()
     def post(self):
@@ -53,20 +55,22 @@ class ArticlesController(Resource):
             return {"status": False, "error": str(e)}, 500
 
         # Save image file and get filename
-        image_filename = None
-        if image and allowed_file(image.filename):
-            filename = secure_filename(image.filename)
-            image_path = os.path.join(UPLOAD_FOLDER, filename)
-            image.save(image_path)
-            image_filename = filename
-        else:
-            return {"status": False, "message": "Image file is required or invalid"}, 400
-
+        saved_images = []
+        for image in request.files.getlist('image'):
+            if image and allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                image_path = os.path.join(UPLOAD_FOLDER, filename)
+                image.save(image_path)
+                saved_images.append(filename)
+            else:
+                return {"status": False, "message": "Image file is required or invalid"}, 400
+            
         data = {
             'title': args['title'],
             'content': args['content'],
             'username': args['username'],
-            'image': image_filename
+            'date': args['date'],
+            'image': saved_images
         }
 
         resultInsert = modelArticles.insertArticles(data)

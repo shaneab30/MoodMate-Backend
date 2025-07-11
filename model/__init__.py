@@ -27,20 +27,26 @@ class Database:
             print(f"Gagal find data, other error: {err}")
         return status, data
 
-    def findMany(self, collection_name, filter):
+    def findMany(self, collection_name, filter, skip=0, limit=0):
         status = False
         data = None
         try:
             collection = self.db[collection_name]
-            resultFind = collection.find(filter)
-            data = list(resultFind)
-            # print("36", data)
+            cursor = collection.find(filter)
+
+            if skip > 0:
+                cursor = cursor.skip(skip)
+            if limit > 0:
+                cursor = cursor.limit(limit)
+
+            data = list(cursor)
             status = True
         except errors.PyMongoError as pymongoerror:
             print(f"Gagal find data, error pymongo: {pymongoerror}")
         except Exception as err:
             print(f"Gagal find data, other error: {err}")
         return status, data
+
 
     def insert(self, collection_name, value):
         status = False

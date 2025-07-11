@@ -111,6 +111,14 @@ def serve_profile_picture():
 
     return send_from_directory('uploads/profile_pictures', filename)
 
+@app.route('/articles/images/<path:filename>', methods=['GET'])
+def serve_article_image(filename):
+    filename = secure_filename(filename)  # sanitize!
+    filepath = os.path.join('uploads/articles', filename)
+    if not os.path.exists(filepath):
+        return jsonify({"error": "File not found"}), 404
+
+    return send_from_directory('uploads/articles', filename)
 
 if __name__ == "__main__":
     app.run(debug=True)
