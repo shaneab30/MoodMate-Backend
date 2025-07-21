@@ -147,4 +147,3 @@ class Users:
         else:
             result['message'] = "User tidak ditemukan"
         return result
-

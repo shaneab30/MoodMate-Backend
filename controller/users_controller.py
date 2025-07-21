@@ -16,16 +16,6 @@ parser.add_argument('age', type=str, required=True, help="Parameter 'age' can no
 parser.add_argument('firstname', type=str, required=True, help="Parameter 'firstname' can not be blank")
 parser.add_argument('lastname', type=str, required=True, help="Parameter 'lastname' can not be blank")
 
-# UPLOAD_FOLDER = "uploads/profile_pictures"
-# ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
-
-# if not os.path.exists(UPLOAD_FOLDER):
-#     os.makedirs(UPLOAD_FOLDER)
-    
-# def allowed_file(filename):
-#     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
 class UsersController(Resource):
     @jwt_required()
     def get(self):

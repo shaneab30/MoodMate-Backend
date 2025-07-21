@@ -1,6 +1,7 @@
 import os
 from flask import Flask, json, render_template, request, jsonify
 from controller.emotion_controller import EmotionController
+from controller.users_username_controller import UsersUsernameController
 from controller.users_profile_picture_controller import UserProfilePictureController
 from ml_model.ML import predict_image
 from werkzeug.utils import secure_filename
@@ -38,6 +39,7 @@ api.add_resource(HappinessController, '/happiness', '/happiness/<string:emotionI
 api.add_resource(LoginController, '/login')
 api.add_resource(UserProfilePictureController, '/users/<string:userId>/profile-picture')
 api.add_resource(ArticlesController, '/articles', '/articles/<string:articleId>')
+api.add_resource(UsersUsernameController, '/users/username/<string:username>/')
 
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
@@ -97,8 +99,9 @@ def predict():
         return jsonify({"error": "No file part"}), 400
     return jsonify({"message": "Prediction successful"}), 200
 
-@jwt_required()
+
 @app.route('/uploads/profile_pictures', methods=['GET'])
+@jwt_required()
 def serve_profile_picture():
     filename = request.args.get("filename")
     if not filename:
