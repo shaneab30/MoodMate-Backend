@@ -2,6 +2,7 @@ from model import Database
 from config import DATABASE_NAME, USERS_COLLECTION
 import random
 import string
+import hashlib
 
 
 class Users:

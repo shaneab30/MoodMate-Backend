@@ -8,3 +8,4 @@ numpy==1.26.4
 tensorflow==2.18.0
 Pillow==11.3.0
 flask_jwt_extended==4.6.0
+bcrypt==4.1.2

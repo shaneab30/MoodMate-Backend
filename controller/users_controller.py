@@ -5,6 +5,7 @@ from flask import request, jsonify
 from werkzeug.utils import secure_filename
 import os
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+import bcrypt
 
 
 modelUsers = Users()
@@ -15,6 +16,7 @@ parser.add_argument('email', type=str, required=True, help="Parameter 'email' ca
 parser.add_argument('age', type=str, required=True, help="Parameter 'age' can not be blank")
 parser.add_argument('firstname', type=str, required=True, help="Parameter 'firstname' can not be blank")
 parser.add_argument('lastname', type=str, required=True, help="Parameter 'lastname' can not be blank")
+parser.add_argument('newPassword', type=str, required=False)
 
 class UsersController(Resource):
     @jwt_required()
@@ -30,9 +32,10 @@ class UsersController(Resource):
     # @jwt_required()
     def post(self, userId=None):
         args = parser.parse_args()
+        hashed_password = bcrypt.hashpw(args['password'].encode('utf-8'), bcrypt.gensalt())
         data = {
             'username': args['username'],
-            'password': args['password'],
+            'password': hashed_password.decode('utf-8'),
             'email': args['email'],
             'age': args['age'],
             'firstname': args['firstname'],
@@ -57,8 +60,31 @@ class UsersController(Resource):
     @jwt_required()
     def put(self,userId):
         args = parser.parse_args()
-        data = {'username': args['username'], 'password': args['password'], 'email': args['email'], 'age': args['age'], 'firstname': args['firstname'], 'lastname': args['lastname']}
+        current_password = args['password']
+        new_password = args.get('newPassword')
         
+        user = modelUsers.findUserById(userId)
+        if not user.get('status'):
+            return {'status': False, 'data': None, 'message': 'User not found'}, 404
+        user_data = user.get('data', {})
+
+        if not bcrypt.checkpw(current_password.encode('utf-8'), user_data['password'].encode('utf-8')):
+            return {'status': False, 'message': 'Incorrect current password'}, 403
+        
+        if new_password:
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        else:
+            hashed_password = user_data['password']
+
+        data = {
+        'username': args['username'],
+        'password': hashed_password,
+        'email': args['email'],
+        'age': args['age'],
+        'firstname': args['firstname'],
+        'lastname': args['lastname']
+        }
+
         existing_username = modelUsers.findUserByUsername(args['username'])
         if existing_username.get('status') == True and existing_username.get('data').get('_id') != userId:
             return {'status': False, 'data': None, 'message': 'Username Already Exists'}, 400
