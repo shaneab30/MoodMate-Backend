@@ -30,7 +30,11 @@ class CustomApi(Api):
         return super().handle_error(e)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=[
+    "https://moodmatebyshane.netlify.app",
+    "http://localhost:3000",  # for local development
+    "https://localhost:3000"   # for local development with HTTPS
+])
 api = CustomApi(app)
 
 api.add_resource(UsersController, '/users', '/users/register', '/users/me', '/users/<string:userId>')

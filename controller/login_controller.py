@@ -22,7 +22,7 @@ class LoginController(Resource):
         if not bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password):
             return {"status": False, 'message': 'Invalid credentials'}, 401
 
-        access_token = create_access_token(identity=str(user['_id']))  # Ensure _id is str for JWT
+        access_token = create_access_token(identity=str(user['_id']))
         return {"status": True, 'access_token': access_token}, 200
 
     
