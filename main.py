@@ -125,4 +125,4 @@ def serve_article_image(filename):
     return send_from_directory('uploads/articles', filename)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=PORT)
+    app.run(port=PORT)
