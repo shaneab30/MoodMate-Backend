@@ -27,7 +27,7 @@ class UsersController(Resource):
             if result['status']:
                 return result['data'], 200
             return {'message': result['message']}, 404
-        return modelUsers.findAllUsers()
+        return {'message': 'Invalid endpoint'}, 404
 
     # @jwt_required()
     def post(self, userId=None):
