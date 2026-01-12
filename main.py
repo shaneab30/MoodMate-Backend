@@ -17,7 +17,7 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from controller.articles_controller import ArticlesController
-from config import PORT
+from config import CERT, KEY, PORT
 
 class CustomApi(Api):
     def handle_error(self, e):
@@ -125,4 +125,7 @@ def serve_article_image(filename):
     return send_from_directory('uploads/articles', filename)
 
 if __name__ == "__main__":
-    app.run(port=PORT)
+    app.run(port=PORT, ssl_context=(
+    CERT,
+    KEY
+))
