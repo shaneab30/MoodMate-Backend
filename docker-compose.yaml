@@ -3,6 +3,7 @@ version: "3.8"
 services:
   moodmate-backend:
     build: .
+    image: envyed/moodmate-backend
     container_name: moodmate-backend
     restart: unless-stopped
 
