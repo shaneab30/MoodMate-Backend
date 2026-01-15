@@ -2,3 +2,7 @@
 /uploads/*
 .vscode
 config.py
+.env
+controller/__pycache__
+ml_model/__pycache__
+model/__pycache__

@@ -1,4 +1,4 @@
-from config import MONGO_URI
+from config import Config
 from pymongo import MongoClient, errors
 import certifi
 
@@ -6,7 +6,7 @@ class Database:
     def __init__(self, dbname):
         try:
             # Use certifi for SSL certificate verification
-            self.connection = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+            self.connection = MongoClient(Config.MONGO_URI, tlsCAFile=certifi.where())
             self.db = self.connection[dbname]
         except errors.ConnectionFailure as conn_fail:
             print(f"Gagal membuat koneksi (connection failure) | {conn_fail}")

@@ -1,5 +1,5 @@
 from model import Database
-from config import DATABASE_NAME, USERS_COLLECTION
+from config import Config
 import random
 import string
 import hashlib
@@ -7,7 +7,7 @@ import hashlib
 
 class Users:
     def __init__(self):
-        self.connection = Database(DATABASE_NAME)
+        self.connection = Database(Config.DATABASE_NAME)
         # print(self.connection.connection)
         
     def generateId(self):
@@ -15,7 +15,7 @@ class Users:
             string.ascii_uppercase + string.digits, k=12))
         filter = {'_id': randomString}
         _, data = self.connection.find(
-            collection_name=USERS_COLLECTION, filter=filter)
+            collection_name=Config.USERS_COLLECTION, filter=filter)
         if data == None:
             return randomString
         return self.generateId()
@@ -23,7 +23,7 @@ class Users:
     def findAllUsers(self):
         result = {'status': False, 'data': None, 'message': ''}
         status, data = self.connection.findMany(
-            collection_name=USERS_COLLECTION, filter={})
+            collection_name=Config.USERS_COLLECTION, filter={})
         
         if len(data) == 0:
             result['message'] = "Data tidak ditemukan"
@@ -42,7 +42,7 @@ class Users:
         data['_id'] = self.generateId()
         
         statusInsert, dataInsert = self.connection.insert(
-            collection_name=USERS_COLLECTION, value=data)
+            collection_name=Config.USERS_COLLECTION, value=data)
         
         if statusInsert == False:
             result['message'] = "Terjadi kesalahan saat insert data user"
@@ -58,7 +58,7 @@ class Users:
         value = {'$set': data}
 
         statusUpdate, dataUpdate = self.connection.update(
-            collection_name=USERS_COLLECTION,
+            collection_name=Config.USERS_COLLECTION,
             filter=filter,
             value=value
         )
@@ -82,7 +82,7 @@ class Users:
         value = {'$set': data}
         
         statusUpdate, dataUpdate = self.connection.update(
-            collection_name=USERS_COLLECTION,
+            collection_name=Config.USERS_COLLECTION,
             filter=filter,
             value=value
         )
@@ -105,7 +105,7 @@ class Users:
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'username': username}
         status, data = self.connection.find(
-            collection_name=USERS_COLLECTION, filter=filter
+            collection_name=Config.USERS_COLLECTION, filter=filter
         )
         
         if status == False:
@@ -121,7 +121,7 @@ class Users:
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'email': email}
         status, data = self.connection.find(
-            collection_name=USERS_COLLECTION, filter=filter
+            collection_name=Config.USERS_COLLECTION, filter=filter
         )
         
         if status == False:
@@ -137,7 +137,7 @@ class Users:
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'_id': user_id}
         status, data = self.connection.find(
-            collection_name=USERS_COLLECTION, filter=filter
+            collection_name=Config.USERS_COLLECTION, filter=filter
         )
         if status == False:
             result['message'] = "Terjadi kesalahan saat mengambil data user"

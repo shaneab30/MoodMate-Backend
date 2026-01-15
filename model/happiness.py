@@ -1,27 +1,27 @@
 import random
 import string
 from model import Database
-from config import DATABASE_NAME, HAPPINESS_COLLECTION
+from config import Config
 
 
 class Happiness:
     def __init__(self):
-        self.connection = Database(DATABASE_NAME)
+        self.connection = Database(Config.DATABASE_NAME)
     
     def generateId(self):
         randomString = ''.join(random.choices(
             string.ascii_uppercase + string.digits, k=12))
         filter = {'_id': randomString}
         _, data = self.connection.find(
-            collection_name=HAPPINESS_COLLECTION, filter=filter)
+            collection_name=Config.HAPPINESS_COLLECTION, filter=filter)
         if data == None:
             return randomString
         return self.generateId()
 
-    def findAllEmotions(self):
+    def findAllHappiness(self):
         result = {'status': False, 'data': None, 'message': ''}
         status, data = self.connection.findMany(
-            collection_name=HAPPINESS_COLLECTION, filter={})
+            collection_name=Config.HAPPINESS_COLLECTION, filter={})
 
         if len(data) == 0:
             result['message'] = "Data tidak ditemukan"
@@ -34,12 +34,12 @@ class Happiness:
             result['message'] = "Berhasil mengambil semua data happiness"
         return result
 
-    def insertEmotion(self, data):
+    def insertHappiness(self, data):
         result = {'status': False, 'data': None, 'message': ''}
         data['_id'] = self.generateId()
 
         statusInsert, dataInsert = self.connection.insert(
-            collection_name=HAPPINESS_COLLECTION, value=data)
+            collection_name=Config.HAPPINESS_COLLECTION, value=data)
 
         if statusInsert == False:
             result['message'] = "Terjadi kesalahan saat insert data happiness"

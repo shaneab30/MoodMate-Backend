@@ -1,18 +1,18 @@
 from model import Database
-from config import DATABASE_NAME, ARTICLES_COLLECTION
+from config import Config
 import random
 import string
 
 class Articles:
     def __init__(self):
-        self.connection = Database(DATABASE_NAME)
+        self.connection = Database(Config.DATABASE_NAME)
     
     def generateId(self):
         randomString = ''.join(random.choices(
             string.ascii_uppercase + string.digits, k=12))
         filter = {'_id': randomString}
         _, data = self.connection.find(
-            collection_name=ARTICLES_COLLECTION, filter=filter)
+            collection_name=Config.ARTICLES_COLLECTION, filter=filter)
         if data == None:
             return randomString
         return self.generateId()
@@ -20,7 +20,7 @@ class Articles:
     def findAllArticles(self, skip=0, limit=8):
         result = {'status': False, 'data': None, 'message': ''}
         status, data = self.connection.findMany(
-            collection_name=ARTICLES_COLLECTION, filter={}, skip=skip, limit=limit)
+            collection_name=Config.ARTICLES_COLLECTION, filter={}, skip=skip, limit=limit)
         if status == False:
             result['message'] = "Terjadi kesalahan saat mengambil data artikel"
         elif data:
@@ -36,7 +36,7 @@ class Articles:
         data['_id'] = self.generateId()
         
         statusInsert, dataInsert = self.connection.insert(
-            collection_name=ARTICLES_COLLECTION, value=data)
+            collection_name=Config.ARTICLES_COLLECTION, value=data)
         
         if statusInsert == False:
             result['message'] = "Terjadi kesalahan saat insert data artikel"
@@ -50,7 +50,7 @@ class Articles:
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'_id': article_id}
         statusUpdate, dataUpdate = self.connection.update(
-            collection_name=ARTICLES_COLLECTION, filter=filter, value=data)
+            collection_name=Config.ARTICLES_COLLECTION, filter=filter, value=data)
         
         if statusUpdate == False:
             result['message'] = "Terjadi kesalahan saat update data artikel"
@@ -64,7 +64,7 @@ class Articles:
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'_id': article_id}
         status, data = self.connection.find(
-            collection_name=ARTICLES_COLLECTION, filter=filter
+            collection_name=Config.ARTICLES_COLLECTION, filter=filter
         )
         if status == False:
             result['message'] = "Terjadi kesalahan saat mengambil data artikel"
@@ -80,7 +80,7 @@ class Articles:
         result = {'status': False, 'data': None, 'message': ''}
         filter = {'username': username}
         status, data = self.connection.find(
-            collection_name=ARTICLES_COLLECTION, filter=filter
+            collection_name=Config.ARTICLES_COLLECTION, filter=filter
         )
         if status == False:
             result['message'] = "Terjadi kesalahan saat mengambil data artikel"

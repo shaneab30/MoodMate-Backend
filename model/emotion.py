@@ -1,19 +1,19 @@
 import random
 import string
 from model import Database
-from config import DATABASE_NAME, EMOTION_COLLECTION
+from config import Config
 
 
 class Emotion:
     def __init__(self):
-        self.connection = Database(DATABASE_NAME)
+        self.connection = Database(Config.DATABASE_NAME)
     
     def generateId(self):
         randomString = ''.join(random.choices(
             string.ascii_uppercase + string.digits, k=12))
         filter = {'_id': randomString}
         _, data = self.connection.find(
-            collection_name=EMOTION_COLLECTION, filter=filter)
+            collection_name=Config.EMOTION_COLLECTION, filter=filter)
         if data == None:
             return randomString
         return self.generateId()
@@ -21,7 +21,7 @@ class Emotion:
     def findAllEmotions(self):
         result = {'status': False, 'data': None, 'message': ''}
         status, data = self.connection.findMany(
-            collection_name=EMOTION_COLLECTION, filter={})
+            collection_name=Config.EMOTION_COLLECTION, filter={})
 
         if len(data) == 0:
             result['message'] = "Data tidak ditemukan"
@@ -39,7 +39,7 @@ class Emotion:
         data['_id'] = self.generateId()
 
         statusInsert, dataInsert = self.connection.insert(
-            collection_name=EMOTION_COLLECTION, value=data)
+            collection_name=Config.EMOTION_COLLECTION, value=data)
 
         if statusInsert == False:
             result['message'] = "Terjadi kesalahan saat insert data emosi"
